@@ -1,0 +1,120 @@
+GIT
+
+Configuración
+
+Lo primero que debemos hacer justo después de instalar git es decirle quienes somos, esto lo hacemos proporcionándole a git nuestro nombre y correo electrónico, 
+lo cual podemos hacerlo con los siguientes comandos
+
+# Indicar nuestro nombre
+git config --global user.name "Nuestro Nombre"
+
+# Indicar nuestro correo electrónico
+git config --global user.email "nuestro@correo.com"
+
+
+Repositorio local
+
+Para inicializar un repositorio primero debemos crear un directorio donde vamos a almacenar nuestro proyecto, luego en la consola nos dirigimos a el y una vez dentro 
+ejecutamos
+
+git init
+
+Una vez que estemos trabajando con el código podremos ver el estatus de nuestro proyecto con el comando
+
+git status
+
+Para añadir archivos al stage y poder rastrear los cambios que se hayan tenido sobre ellos ejecutamos
+
+# Para añadir un solo archivo
+git add nombre_del_archivo
+
+# Para añadir todo lo que hay en el directorio actual
+git add --all
+
+# o bien
+
+git add .
+
+Por último creamos un commit, los commits deben ir siempre con un mensaje el cuál pasamos con el parámetro -m como se muestra a continuación:
+
+git commit -m 'Primer commit'
+
+Para ver la historia de los commits
+
+git log
+
+_____________________________________________________________________________________________________________________________________________________________________
+
+Uso de Stage en Git
+
+Anteriormente vimos el flujo de trabajo de Git, en el cual vimos los 3 estados sobre los que pueden estar nuestros archivos, los cuales son modificado, 
+consolidado (commited) y en escenario (staged). 
+
+Los archivos se encuentran en etapa de modificado cuando se han detectado cambios en el archivo pero aún no se han consolidado. 
+
+Se encuentran en escenario cuando se han marcado las modificaciones y su próximo paso será consolidarlo. 
+
+Están consolidados cuando el archivo y su información han sido guardados en la base de datos de Git (la cual se encuentra en la carpeta oculta .git). 
+
+En esta ocasión veremos qué podemos hacer mientras nuestros archivos están entre estos 3 estados.
+
+Para ver las diferencias entre un archivo consolidado y otro en stage usamos:
+
+git diff
+
+git diff --staged
+
+
+Para restaurar un commit anterior podemos usar un soft reset:		
+
+git reset --soft IDENTIFICADOR_DEL_COMMIT   (deja este commit, pero los cambios posteriores los deja en stage)
+
+o podemos utilizar un hard reset:		
+
+git reset --hard IDENTIFICADOR_DEL_COMMIT	(eliminará el commit junto con todos sus cambios y no podrán ser accesibles de nuevo)
+
+
+Para incluir una corrección en un commit usamos:	
+
+git commit --amend -m 'Saludar a la comunidad de Styde'
+
+Generacion SSH
+
+Generating a new SSH key
+
+Open Git Bash.
+
+Paste the text below, substituting in your GitHub email address.
+
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+
+This creates a new ssh key, using the provided email as a label.
+
+Generating public/private rsa key pair.
+
+When you're prompted to "Enter a file in which to save the key," press Enter. This accepts the default file location.
+
+Enter a file in which to save the key (/c/Users/you/.ssh/id_rsa):[Press enter]
+
+At the prompt, type a secure passphrase. For more information, see "Working with SSH key passphrases".
+
+Enter passphrase (empty for no passphrase): [Type a passphrase]
+Enter same passphrase again: [Type passphrase again]
+
+Your identification has been saved in /c/Users/USUARIO/.ssh/id_rsa.
+Your public key has been saved in /c/Users/USUARIO/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:38W3Exj57SsArHMrqWyJI3qBb8siuVKDq/TuFkFSmco admysis@hotmail.com
+The key's randomart image is:
++---[RSA 4096]----+
+|  ..o            |
+| . +          .  |
+|. +     .    o   |
+| E .     o   .+ .|
+| o  .   S .  .ooo|
+|o +.   o o o . oo|
+| * oo . + o o  o.|
+|Bo=+.o o .   .  o|
+|O=B=oo. .     .. |
++----[SHA256]-----+
+

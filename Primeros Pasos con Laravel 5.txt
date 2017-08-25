@@ -1,0 +1,1295 @@
+﻿Laravel
+
+* First Steps 5.1 (https://styde.net/laravel-5/) (5.1.33)
+
+* Curso 1
+
+Para instalar Laravel usando Composer se sigue la estructura:
+	
+	composer create-project laravel/laravel nombre_proyecto "version"
+	composer create-project laravel/laravel first_steps "5.1.*"
+
+https://localhost/laravel/public
+
+Para levantar el servidor de Laravel podemos ejecutar en la consola dentro del directorio raíz del proyecto:
+
+	php artisan serve
+
+http://localhost:8000/
+
+* Artisan, la interfaz de línea de comandos de Laravel
+
+Para conocer el listado completo de los comandos disponibles ejecutamos en consola, en el directorio raíz de un proyecto de Laravel:
+
+	php artisan list
+
+Para saber de qué trata y cuáles son las opciones que se tiene disponibles con cada comando podemos usar help:
+
+	php artisan help nombre-comando
+o
+	php artisan nombre-comando -h
+
+Por ejemplo:	php artisan migrate -h
+
+Así nos dice que es el comando para correr las migraciones y entre las opciones con que cuenta está poder indicar cuál es la base de datos por ejemplo:
+
+	php artisan migrate --database=tests
+
+Una de las grandes ventajas de esta herramienta es que tiene un conjunto de comandos dedicado a generadores, es decir, que nos permiten crear elementos 
+como controladores, middleware, seeders, modelos, entre otros, los cuales son los que están bajo la categoría make:
+
+Cada uno de esos generadores tiene sus propias opciones, así que puedes revisarlo con el comando help. Por ejemplo, para crear un controlador sin ningún 
+método usamos la opción plain:
+
+	php artisan make:controller PostController --plain
+
+Otros comandos de uso común puede ser:
+
+Para levantar el servidor de una aplicación, es decir, para hacer correr una aplicación con el servidor que viene incluido en Laravel podemos hacerlo 
+de manera fácil y rápida con:
+
+	php artisan serve
+
+y nos mostrará:	Laravel development server started on http://localhost:8000/
+
+De esta manera podemos ir al navegador, visitar  http://localhost:8000/ y podremos ver nuestra aplicación funcionando. 
+
+Para detener el servidor, en consola ejecutamos las teclas Ctrl+C. Tiene además las opciones de poder cambiar el puerto y el host.
+
+Para cambiar el namespace de la aplicación:	php artisan app:name nombre-namespace
+
+Para ver el listado completo de rutas:		php artisan route:list
+
+Como resultado nos mostrará un listado de todas las rutas de la aplicación con la información sobre el método HTTP, la URI, la acción, el nombre y los 
+middleware definidos para cada ruta, con lo cual, entre otras cosas, podemos verificar que todas las rutas de nuestra aplicación están bien definidas.
+
+Para interactuar con la aplicación:	php artisan tinker
+
+Para poner en modo mantenimiento nuestra aplicación:	php artisan down	o	php artisan up
+
+
+* Tinker es una consola de comandos con la que podremos interactuar con todas las clases y métodos de nuestra aplicación, una herramienta muy útil a la hora de 
+realizar pruebas de funcionamiento.
+
+Activar la tinker
+
+Para usar o activar la consola de comandos de laravel solo debemos ejecutar el siguiente comando haciendo uso de artisan:	$ php artisan tinker
+
+Aparecerá en pantalla una línea similar a esta:		Psy Shell v0.4.4 (PHP 5.5.15 — cli) by Justin Hileman
+
+Esto indica que estamos en la consola de tinker y desde ahora podemos ejecutar todos los métodos de nuestra aplicación.
+
+Sintaxis  
+
+Lo genial de esta herramienta es que podemos escribir código en php y ejecutarlo, los llamados a las variables y funciones se hacen de la misma forma, 
+de hecho podemos usar funciones como print_r() para imprimir arrays o echo $var, para imprimir variables lo que hace mucho más sencillo su uso.
+
+	>>> $var = 1 + 2 ;
+	=> 3
+	>>> echo $var ;
+	3
+
+Creando registros desde la consola con tinker
+
+Veamos un ejemplo más divertido usando los métodos de la aplicación, esta vez vamos a crear un usuario, tal cual como lo haríamos desde un controlador.
+
+Nota: debes tener configurada la conexión a tu base de datos.
+
+>>> $user = new App\User;
+=> <App\User #000000000cd4b36c000000004678b206> {}
+
+Con esto se habrá creado una nueva instancia de la clase User, luego asignamos los valores correspondientes a cada campo.
+
+>>> $user->name = 'jeff';
+=> "jeff"
+>>> $user->email = 'jeffer.8a@gmail.com';
+=> "jeffer.8a@gmail.com"
+>>> $user->password = Hash::make('12345');
+=> "$2y$10$VKisE35ASiyLXnZefqvjN..1vVa5wvSkgo6ou5FJwuzYfepUDB/Ku"
+
+En este caso se uso el método Hash::make() para la contraseña y vemos el resultado directamente en pantalla.
+
+Por último solo queda almacenar el usuario
+
+>>> $user->save();
+=> true
+>>>
+
+Si la respuesta es true sabremos que todo salió bien, pero vamos a comprobarlo.
+
+Realizando búsquedas desde la consola
+
+Una vez mas te recuerdo que puedes acceder a todos los métodos y clases de la aplicación, por lo cual puedes hacer querys de tus modelos como veremos a continuación.
+
+>>> $list = App\User::all();
+=> <Illuminate\Database\Eloquent\Collection #000000000a28c38000000000225703b3> [     <App\User #000000000a28c39f00000000225703b3> {                                      id: "1",
+         name: "jeff",
+         email: "jeffer.8a@gmail.com",
+         created_at: "2015-05-08 13:54:25",
+         updated_at: "2015-05-08 13:54:25"
+     }
+   ]
+
+
+Accediendo a otros métodos 
+Probemos con Carbon del cual hablábamos en la publicación de Manipular fechas con el componente Carbon en Laravel 5
+
+carbonShell
+
+>>> $carbon = new Carbon\Carbon;
+=> <Carbon\Carbon #000000004be04f1e00000000766cfad4> {
+date: "2015-05-08 14:04:05.000000",
+timezone_type: 3,
+timezone: "UTC"
+}
+>>> $date = $carbon->now();
+=> <Carbon\Carbon <b>#000000004be04f1f00000000766cfad4</b>> {
+date: "2015-05-08 14:04:29.000000",
+timezone_type: 3,
+timezone: "UTC"
+}
+>>> echo $date;
+2015-05-08 14:05:21⏎
+=> null
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 2
+
+vendor\bin\phpunit	Permite ejecutar un ambiente de pruebas dentro de Laravel
+
+php artisan make:text NotesTest		Permite crear una prueba llamada: NotesTest
+
+En el archivo: tests/NotesTest.php:
+
+    public function testExample()
+    {
+        $this->assertTrue(true);
+    }
+
+Lo primero que hacemos es darle un nombre a la función: test_notes_list, 
+
+y luego escribimos la prueba a realizar: 
+
+    public function test_notes_list()
+    {
+    	// Con Eloquent ERM, podemos incluir las notas en la tabla
+
+    	// Having (Base o condiciones para hacer la prueba, en este caso tenemos 2 notas en la BD)
+    	Note::create(['note' => 'My first note']);
+    	Note::create(['note' => 'Second note']);
+
+        // When, definimos las diferentes acciones que haría el usuario
+        $this->visit('notes')
+        	
+        	// Then, donde agregamos todas las comprobaciones
+        	->see('My first note')
+        	->see('Second note');
+
+        	// Se lee: Teniendo 2 notas, cuando el usuario visite la pagina de notas, entonces va a ver la primera nota y la segunda nota
+    }
+
+Cuando corremos la prueba por primera vez se genera el siguiente error:	Error: Class 'Note' not found
+
+Esto sucede porque no se ha creado la clase: Note, para crearla usamos el comando de artisan:	php artisan make:model Note
+
+Laravel crea esta clase en: App/Providers/Note.php
+
+Cuando corremos la prueba nuevamente se genera nuevamente el mismo error:	Error: Class 'Note' not found
+
+Esto sucede porque laravel genera la clase Note, pero como se manejan los namespaces es necesario que en el archivo de la prueba se importe este namespace para 
+indicarle a PHP que quiere trabajar con la clase Notes. Para importarla se usa:  use App\Note;  (App porque pertenece a namespace App, tal como laravel lo definio 
+en la clase)
+
+Al volver a generar la prueba nos sale un error de asignación masiva:	Illuminate\Database\Eloquent\MassAssignmentException: note
+
+Esto sucede por seguridad para proteger las aplicaciones, y se soluciona definiendo una nueva propiedad "fillable" en la clase:	protected $fillable = ['note'];
+
+Al ejecutar la prueba una vez mas se genera el error: PDOException: SQLSTATE[HY000] [1045] Acces denied for user 'homestead'@'localhost' (using password: YES)
+
+Esto sucede porque no se ha configurado el acceso a la BD, para esto se modifica el archivo .env:
+
+DB_DATABASE=notes
+DB_USERNAME=root
+DB_PASSWORD=
+
+Luego creamos la base de datos: notes con phpMyAdmin.
+
+Una vez creada la BD se intenta ejecutar la prueba nuevamente y genera el error: 
+
+PDOException: SQLSTATE[45S02]: Base table or view not found: 1146 Table 'notes.notes' doesn't exist
+
+Esto sucede proque se creó la BD, pero no se ha definido la tabla Notes. Para definirla se pueden usar "migraciones" con artisan:
+
+php artisan make:migration create_notes_table --create=notes
+
+Una vez creado el archivo de la migración (en la carpeta database/migrations), lo editamos y definimos los campos de la tabla (funcion up): 
+
+$table->mediumText('note');
+
+Luego ejecutamos la migracion con el comando:	php artisan migrate
+
+Si es necesario revertir la migración, se usa el comando: php artisan migrate:rollback
+
+Ahora se genera un nuevo error:	A request to [http://localhost/notes] failed. Received status code [404]
+
+Esto sucede porque la ruta notes falla, y se debe a que no hemos creado esta ruta. Para crearla se edita el archivo: app/Http/routes.php incluyendo la ruta:
+
+Route::get('notes', function () {
+	return view('notes');
+})	
+
+Ahora creamos la vista dentro de la carpeta: resources/views/notes.blade.php (porque vamos a usar el sistema de platillas de laravel: blade)
+
+Para cargar esta pagina en el navegador usamos:	http://localhost:8000/notes
+
+Ahora sale un nuevo error: matches PCRE pattern "/My first note/i".
+
+Sucede porque no puede encontrar el texto: My First note, por lo tanto usamos Eloquent para intentar mostrar las notas de forma dinámica:
+
+Para esto modificamos el archivo de rutas con:	$notes = \App\Note::all();
+
+Para verificar podemos usar la consola interactiva tinker:	php artisan tinker
+
+Para pasar las notas a la vista, podemos utilizar la funcion: compact para crear un array asociativo, esto se pasa como segundo argumento de la función view
+
+return view('notes', compact('notes'));
+
+Ahora modificamos la vista para imprimirlas en listado html utilizando la sintaxis de "blade":
+
+<ul>
+	@foreach ($notes as $note)
+	<li>
+		{{ $note->note }}
+	</li>
+	@endforeach
+</ul>
+
+Como si fueran objetos. hay una colección de nota ($notes) en la cual tenemos mucho modelos de notas ($note), de la cual imprimimos cada nota.
+
+Probamos nuevamente (con vendor\bin\phpunit) y si todo esta ok el resultado debe ser:	OK <1 test. 3 assertions>
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 3
+
+* Carpetas de la Aplicacion:
+
++ app		Donde se encuentran las clases de modelos, controladores, rutas, entre otras.
++ bootstrap	contiene configuraciones del framework y cache.
++ config	Carpeta de Configuración. Archivos de Configuración del framework (Modo Debug, URL de la Página, Timezone, Idioma, etc)
++ database	Se pueden crear migraciones (para crear tablas de la BD de manera dinámica con POO), seeders y factories, lo relacionado a la base de datos.
++ public	Carpeta de acceso publico que verán los usuarios (JavaScrip, Css, Imagenes, Archivos compilados). No debe haber archivos confidenciales.
++ resources	Archivos assets de la aplicación (orientados a archivos de sass que necesitaremos compilar a scss)
+		Archivos de idiomas
+		Archivos de vistas (views)
++ storage	Se guardan archivos temporales del framework
++ test		Para ubicar todas las pruebas que tendrá la aplicación.
++ vendors	En esta carpeta se instalan todas las dependencias de Composer. No suele subirse a los repositorios de Git sino que cada desarrollador
+		cuando va instalar un nuevo proyecto simplemente ejecuta en la consola: Composer install para descargar todas las dependencias.
+
+* mod_rewrite es un módulo del servidor web Apache que convierte las URL solicitadas en otra según una regla.
+* .htaccess es un archivo de configuración que permite definir distintas reglas para directorios y archivos como por ejemplo limitar el acceso a directorios, crear URL más amigables, crear redireccionamientos, entre otras. En el caso de Laravel lo usa para manipular todas las peticiones que se hacen al proyecto y con la regla RewriteRule ^ index.php [L]  configura que las peticiones de tipo ruta sean enviadas a public/index.php para ser procesadas.
+
+
+* FrontEnd Controller. En vez de crear un archivo por cada página, Laravel tiene FrontEnd Controller.
+
+Laravel recibe todas las peticiones que se hagan a la página, a menos que se traten de CCS, JavaScript, Imagenes, etc. Como se ve en el archivo:
+public/.htaccess todas las llamadas que no sean a una carpeta o a un archivo van a ser manejadas por Index.php.
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+* Como crear rutas en Laravel 5.*
+
+Para crear una ruta en el proyecto vamos al archivo: /app/Http/routes.php
+
+La forma más simple de una ruta acepta los siguientes parámetros: la ruta (URI) y una función anónima (Clousure)
+
+En este archivo se configuran todos los EndPoint de nuestra aplicación, es decir todas las URL y Rutas con las que el usuario va a poder obtener información
+o interactuar con nuestro proyecto.
+
+Ejemplos:
+
+Cuando el usuario visite el home (/) de nuestro proyecto, va a obtener la vista: welcome
+
+Route::get('/', function () {
+	return view('welcome');
+});
+
+
+Cuando visitemos la pagina "Notes" vamos a obtener todas las notas (all) y las vamos a mostrar en una vista llamada "notes". No debemos especificar las carpetas:
+resources/views/notes.blades.php, porque laravel ya sabe nuestras carpetas estan en la carpeta "resources/views" y que todas nuestras vistas tienen la extensión:
+".blades.php".
+
+Route::get('notes', function () {
+	$notes = Note::all();
+	return view('notes', compact('notes'));
+});
+
+Ahora queremos mostrar un formularios para crear Notas:
+
+Route::get('notes/create', function () {
+	return '[Create notes]';
+});
+
+Laravel sabe como procesar y retornar:
+
+Una Vistas:		return view('notes', compact('notes'));
+Una cadena texto:	return '[Create notes]';
+Un Array:		return [ 'notes' => 'create' ];			Este array será convertido a JSON por si queremos crear una API
+
+Para rutas más dinámicas:
+
+Si queremos mostrar una nota, solo necesitamos definir una sola ruta, podemos usar parámetros dinámicos (una cadena encerrada en {}):
+
+Route::get('notes/{note}', function ($note) {
+	return $note;
+});
+
+Laravel se encarga de interpretar dinámicamente la URL y luego de pasarnos el parámetro para que podamos trabajar con el.
+
+Por ejemplo con Eloquent podemos cargar una nota o cualquier otra acción.
+
+Podemos restringir a que la ruta no acepte cadenas de texto, sino solo números del 0 al 9 (con el método ->where dentro de la declaración de nuestra ruta):
+
+Route::get('notes/{note}', function ($note) {
+	return $note;
+})->where('note', '[0-9]+');
+
+* Filtrar rutas:
+
+Route::get('user/{id}', function ($id) {
+    return "Esto es un ID:".$id;
+})->where(['id' => '[\d]+']);
+ 
+Route::get('user/{slug}', function ($slug) {
+    return "Esto es un Slug:".$slug;
+})->where(['slug' => 'create|delete|update']);
+ 
+Route::get('user/{name}', function ($name) {
+    return "Esto es un Nombre:".$name;
+})->where(['name' => '[-\w]+']);
+
+Nota: En Laravel 5.3 app/Http/routes.php NO EXISTE, en su lugar está la carpeta routes con web.php
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 4. Rutas para formularios en Laravel. Metodo POST
+
+Un servidor web usa el protocolo HTTP para sus comunicaciones, que recibe las peticiones que pueden ser de distintos métodos como pueden ser: GET, POST, 
+PUT, DELETE, PATCH.
+
+Las rutas de tipo GET son aquellas que solicitan un recurso a través de una ruta al servidor web, cuyo método de petición es GET. En Laravel se pueden 
+expresar así en el archivo /app/Http/routes.php:
+
+Route::get('notes/create', function () {
+    return '[Create notes]';
+});
+
+Las rutas de tipo POST son aquellas que envían datos, usualmente por medio de formularios, al servidor web y su método de petición es POST. Estas rutas 
+por su parte, en Laravel se pueden escribir:
+
+Route::post('notes', function () {
+    return 'Creating a note';
+});
+
+
+El formulario creado fue:
+
+<form method="POST">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}"></input>
+    <textarea></textarea>
+    <button type="submit">Create note</button>
+</form>
+
+En Laravel   {{ csrf_field() }}  es equivalente a   <input type="hidden" name="_token" value="{{ csrf_token() }}"></input> que es usado para proteger a los formularios de la aplicación de ataques de tipo CSRF (del inglés Cross-site request forgery)
+Si en vez de trabajar con formularios se está trabajando con algún framework de JavaScript como AngularJS, Vue.js, entre otros, donde la aplicación se conecta al servidor por peticiones POST si necesidad de usar un formulario en HTML usamos las pruebas con PHPUnit para comprobar que están funcionando correctamente.
+
+La función: csrf_token() evita los ataques CSRF (Cross Side Request Forgery)
+
+<input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+En Laravel, puede ser cambiado por:
+
+{!! csrf_field() !!}
+
+Que tiene el mismo efecto
+
+Ejemplo:
+
+	<form method="POST">
+		{!! csrf_field() !! }
+		<textarea></textarea>
+		<button type="submit">Create Note</button>
+	</form>
+
+Esta petición que hace parte del formulario "notes", sea recibida por la ruta: Route::post('notes')
+
+Otra forma de probar rutas POST aunque no tengamos un formulario, es mediante pruebas automatizadas de Laravel (test):
+
+public function test_create_note()
+{
+    // Es lo mismo que escribir: Route::post('notes')
+    // When
+    $this->post('notes')
+        // Then
+        ->see('Creando una Nota');
+
+    // Cuando envio una peticion POST a la URL notes, espero ver el texto: Creando una Nota
+}
+
+La probamos ejecutando en la consola: 	vendor/bin/phpunit
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 5. Sistema de plantillas y layout con Bootstrap 3
+
+Trata sobre el motor o sistema de plantillas de Laravel llamado Blade y cómo integrar el framework de CSS Bootstrap para crear las vistas de nuestra aplicación.
+
+Con blade podemos permitir o no que nos hagan ataques de tipo XSS, con inserciones de HTML o JAVASCRIPT:
+
+Ataque de tipo XSS (del inglés Cross-Site Scripting) es aquel que consiste en la posibilidad de introducir código Javascript en una aplicación web, lo que 
+permite realizar una serie de acciones maliciosas en la misma.
+
+Si escribimos una instrucción con Php, como:	<?= $note->note ?>	permitimos que nos hagan este tipo de ataques
+
+Blade usa dos tipos de etiquetas para mostrar contenido:
+
+	{{ $notes->note }} la cual escapa etiquetas HTML
+	{!! $notes->note !!}  que NO escapa etiquetas HTML
+
+Debes tener cuidado cuando muestres contenido dado por los usuarios de la aplicación, usando siempre la sintaxis {{ }} para evitar ataques XSS y/o escapar 
+etiquetas HTML de los datos.
+
+Con la instrucción:	{{ $note->sumary }}	mostramos un resumen de la nota (si no supera los 50 caracteres), o los primeros 50 caracteres y puntos suspensivos.
+
+Condicionales en Blade
+
+@if (count($notes) === 1)
+    I have one note!
+@elseif (count($notes) > 1)
+    I have multiple notes!
+@else
+    I don't have any notes!
+@endif
+
+Bucles en Blade
+
+<ul>
+   @foreach ($notes as $note)
+     <li>
+         {{ $note->note }}
+     </li>
+   @endforeach
+</ul>
+
+También hay para bucles: while, for, entre otros.
+
+
+
+En laravel podemos crear "layouts" completos con "Blade", donde podemos colocar el código repetitivo (Ejemplo: Encabezados y Pies de Página) y luego utilizarlo en 
+todas las páginas cuando lo necesitemos
+
+Para usar Bootstrap: copiamos la Plantilla y sustituimos los CDN del CSS y Js
+
+Layout o plantilla es una vista que contiene datos que se repiten en varias vistas, como por ejemplo, el menú principal, el sidebar, el pie de página, entre otras.
+
+Directivas de Blade para crear layouts:
+
+@yield directiva para indicar una sección en una plantilla que podemos extender en otras vistas.
+@extends directiva para establecer que dicha vista extiende de otra vista (una plantilla), es decir que usa el contenido de esa vista.
+@section directiva para usar una sección definida por medio de @yield en una plantilla.
+
+*** Tutorial básico de Blade, el sistema de plantillas de Laravel: (https://styde.net/tutorial-basico-de-blade-el-sistema-de-plantillas-de-laravel/)
+
+Podemos instalar Bootstrap (http://getbootstrap.com/) y en la sección "Getting started" opción "Examples" podemos ver algunas plantillas, vamos a tomar alguna
+de ellas y ver su codigo fuente en el navegador, vamos a copiar todo el html y lo llevamos a nuestro archivo: layout.blade.php
+
+Al final del archivo le podemos eliminar las siguientes etiquetas:
+
+Las usadas para Internet Explorer:
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+Luego regresamos a la página de Bootstrap y utilzamos los CDN para no descargar los archivos de Javascript, ni de CSS. 
+
+Tomamos el CDN de JavaScript y lo pasamos a nuestro archivo de layout:
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+Igualmente tomamos todo el CSS y el tema opcional del CDN y lo llevamos al archivo de Layout.
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+Volvemos al archivo de Layout y eliminamos otras etiquetas de Internet Explorer y de Debugging (antes de la etiqueta </head>)
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+Tambien eliminamos el CSS de Bootstrap y lo reemplazamos por el que traemos del CDN:
+
+Eliminamos:
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+
+Y lo reemplazamos por el codigo CSS de CDN y el tema opcional:
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+Podemos dejar el "Top" con todo el menú y podemos cambiar el texto "Project Name" por el de nuestro Proyecto y el href por nuestra dirección web.
+
+Igualmente se puede descargar este repositorio y cambiar el menu, el layout, etc.
+
+Lo mas importante que debemos aprender es que podemos quitar este bloque de HTML (en el div class="container"> ):
+
+      <div class="starter-template">
+        <h1>Bootstrap starter template</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+      </div>
+
+Y reemplazarlo con la siguiente instrucción de Blade:	@yield('content')
+
+Y luego en nuestra otra página "notes.blade.php" podemos deshacernos de todo el HTML:
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Laravel</title>
+</head>
+<body>
+
+Y
+
+</body>
+</html>
+
+Y lo podemos reemplazar por el código:	@extends('layout')	para hacer uso del layout construido con Blade.
+
+Y el código que no pertenece al layout, sino que pertenece a nuestro programa lo envolvemos dentro de las etiquetas: "@section('content')", el nombre de la sección
+que para este caso es "content" debe quedar tal como se registro en el layout, y cerramos con "@endsection":
+
+Ejemplo:
+
+@extends('layout')
+
+@section('content')
+
+	<h2>Notes</h2>
+	<ul>
+		@foreach ($notes as $note)
+		<li>
+			{{ $note->note }}
+		</li>
+		@endforeach
+	</ul>
+
+@endsection
+
+Luego al regresar al navegador y recargar la página podemos ver que tenemos instalado el layout desarrollado con Bootstrap.
+
+Como no tenemos un pie de página, podmeos modificar el layout, colocandolo luego de la instrucción: @yield('content'), asi:
+
+<hr>
+<p> &copy; 2017 - http://admysis.com</p>
+
+Ahora, si en nuestro archivo: Routes.php creamos otra vista, ejemplo:
+
+Route::get('notes/create', function() {
+	return view('notes/create');
+});
+
+Nuestro listado de notas tambien puede estar dentro de la carpeta notes:
+
+return view('notes/list', compact('notes'));
+
+Ahora creamos una nueva carpeta "notes" dentro de vistas y movemos allí nuestra vista "notes.blade.php" y la renombramos a "list.blade.php", y vamos a
+crear la otra vista: "create.blade.php"	
+
+Para darle un margen superior al layout, para poder ver correctamente nuestras vistas, agregamos CSS (antes de la etiqueta de cierre del head </head>):
+
+    <style>
+      body {
+        margin-top: 60px;  
+      }
+    </style>
+
+De esta forma podremos ver correctamente nuestras vistas:	http://localhost:8000/notes	y	http://localhost:8000/notes/create.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 6. Creación y Uso de Controladores en Laravel 5.*
+
+Cómo generar y trabajar con los controladores, los cuales son una capa en nuestra aplicación que nos permite comunicar las rutas con los modelos y demás clases 
+y servicios para dar una respuesta al usuario.
+
+Para crear un Controlador escribimos la instrucción:	php artisan make:controller NotesController
+
+Este archivo se crea dentro de la carpeta:	App/Http/Controllers
+
+Para crear un Controlador desde cero (sin que la Clase tenga funciones predefinidas) escribimos la instrucción:	php artisan make:controller NotesController --plain
+
+Para buscar ayuda sobre controladores:	php artisan help make:controller
+
+Ahora desde Rutas pasamos todas las acciones de nuestro modulo de notas a nuestro controlador de notas NotesController, para esto traemos el contenido de:
+
+Route::get('notes', function ()
+
+y lo creamos dentro del controllador como una función index() ya que se convertirá en la página principal de la aplicación:
+
+	public function index()
+	{
+	   	// Usamos Eloquent para cargar todas las notas de la BD
+		$notes = \App\Note::all();
+
+		// En la variable notes se cargan todas las notas previamente, para imprimirlas usariamos:
+		// dd($notes);
+		return view('notes/list', compact('notes'));
+	}
+
+Tambien debemos importar a este archivo los nombres de espacio con:	use App/Note;
+
+Ahora creamos las funciones create, store y show para crear, almacenar y mostrar la nota:
+
+	public function create()
+	{
+		return view('notes/create');
+	}
+
+	public function store()
+	{
+		return 'Creando una Nota';
+	}
+
+	public function show($note)
+	{
+		dd($note);
+	}
+
+Ahora dentro de las Rutas vamos a cambiar la función anónima del codigo, por el nombre del controlador y la acción respectivamente:
+
+Route::get('notes', function () {
+	$notes = \App\Note::all();
+	return view('notes/list', compact('notes'));
+});
+
+=> Cambia a:	Route::get('notes', 'NotesController@index');
+
+Route::get('notes/create', function() {
+	return view('notes/create');
+});
+
+=> Cambia a:	Route::get('notes/create', 'NotesController@create');
+
+
+Route::post('notes', function() {
+	return 'Creando una Nota';
+});
+
+=> Cambia a:	Route::post('notes', 'NotesController@store');
+
+
+Route::get('notes/{note}/{slug?}', function($note, $slug = null) {
+	dd($note, $slug);
+})->where('note', '[0-9]+');
+
+=> Cambia a:	Route::get('notes/{note}', 'NotesController@show')->where('note', '[0-9]+');
+
+La idea es que todo el código de nuestras acciones quede agrupado en el controllador NoteController, a esto se le llama "refactorizar".
+
+
+Con el comando:	php artisan route:list	podemos ver el listado de rutas registradas en el sistema, correspondientes a las registradas en el archivo Routes.php
+
+Para facilitar el trabajo, se instala el package "PHP Companion" y se configuran las siguientes funciones:
+
+ { "keys": ["f6"], "command": "expand_fqcn" },
+ { "keys": ["f5"], "command": "find_use" },
+ { "keys": ["f4"], "command": "import_namespace" },
+ { "keys": ["shift+f12"], "command": "goto_definition_scope" },
+ { "keys": ["f7"], "command": "insert_php_constructor_property" }
+
+F6. expand_fqcn: permite obtener el nombre completo de la clase seleccionada.
+F5. find_use: permite importar la sentencia use en la cabecera del archivo con el namespace correcto.
+F4. import_namespace: permite agregar la definición del namespace basado en el nombre del archivo donde se encuentre el cursor.
+Shift+F12.  goto_definition_scope: permite buscar el archivo donde esta definida la clase seleccionada.
+F7. insert_php_constructor_property: permite agregar una propiedad al constructor de la clase donde se encuentre el cursor, si  el constructor no existe, 
+    se crea automáticamente y en caso de que exista, simplemente actualiza el código agregando la nueva propiedad.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 7. Creación de registros con Laravel 5.*
+
+Vamos a crear el feature para agregar notas dentro de nuestro proyecto
+
+
+Inicialmente crearemos un Test o prueba de lo que queremos hacer, para esto modificamos la funcion: test_create_note()
+
+   public function test_create_note()
+    {
+        $this->visit('notes')
+            ->click('Add a Note')
+            ->seePageIs('notes/create')
+            ->see('Creando una Nota')
+            ->type('A new note' , 'note')
+            ->press('Create note')
+            ->seePageIs('notes')
+            ->see('A new note')
+            ->seeInDatabase('notes', [
+                'note' => 'A new note'
+              ]);
+       
+    }
+
+// Cuando visitemos la página "notes" y hagamos click sobre el enlace "Add a Note", vamos a ser llevado a una nueva página llamada "notes/create", 
+donde vamos a ver un título llamado "Creando una Nota" y alli en esa página vamos a escribir "A new note" en un campo llamado "note", luego al ser 
+presionado el enlace "Create note" vams a ser llevados de vuelta a la página "notes" y dentro de esta página vamos a ver el texto correspondiente a 
+la nota que agregamos "A new note", y vamos a tener esta nota registrada en la base de datos (En la tabla "notes" el campo "note" va a contener la 
+nota "A new note")
+
+Cuando ejecutamos esta prueba nos ira guiando con los pasos necesarios para crear una nueva nota en la Base de Datos:
+
+InvalidArgumentException: Could no find a link with a body, name, or ID attribute of [Add a note]
+
+Porque no pudo encontrar ningún enlace con el texto o ID "Add a Note"
+
+Entonces regresamos al editor y en el archivo: resources/views/notes/list.blade.php agregamos el enlace:
+
+		<a href="{{ url('notes/create') }}">Add a note</a>
+
+Ahora sale:
+
+InvalidArgumentException: Nothing matched the filter [note] CSS query privided for [http://localhost/notes/create].
+
+Porque ningún elemento CSS tiene el nombre o el ID [note], ya que en nuestra página "create/notes" no tenemos ningún campo, ni formularios, por lo tanto 
+procedemos a crearlo:
+
+	<form method="POST" action="{{ url('notes') }}">
+		{!! csrf_field() !!}
+		<textarea name="note"></textarea>
+	</form>
+
+Probando nuevamente tenemos:
+
+InvalidArgumentException: Could not find a form that has submit button [Create note]
+
+Porque no puede encontrar ningún botón que se llame "Create note"
+
+Entonces procedemos a crearlo:
+
+	<button type="submit">Create note</button>
+
+Ahora sale el error:
+
+Faild asserting that "Creando una Nota" matches PCRE pattern "/A new note/i"
+
+Porque en la function store() del NotesController solo se está enviando el mensaje "Creando una Nota", pero no se esta permitiendo visualizar las notas, tampoco 
+permite almacenarlas en la BD, tampoco nos esta devolviendo a la pagina de notas, etc.
+
+Para solucionar este problema necesitamos saber como obtener los datos que envia el usuario, lo cual se puede hacer, entre otras, con la funcion helper de 
+Laravel llamada Request que crea un objeto que tiene un metodo All que nos permite obtener los datos enviados por el usuario:
+
+	return request()->all();
+
+Si recargamos el formulario obtenemos un JSON con los datos enviados por el usuario (en un arreglo):
+
+_token	"pn4Lgti66YYgdiu7IBUryQQ00fbcpom63xqwcPzL"
+note	"Nueva Nota Sisco"
+
+Si solo queremos obtener los datos del campo "note", cambiamos la instrucción a:
+
+	return request()->get('note');
+
+Con esto al recargar la página, vemos solo la nota enviada.
+
+Si solo queremos obtener los datos del campo "note", pero en un arreglo, cambiamos la instrucción a:
+
+	return request()->only(['note']);
+
+
+El helper request() devuelve un objeto de tipo Illuminate\Http\Request. En este caso el método all() devuelve el array de datos enviado con el formulario.
+
+Para utilizar el helper request se debe incluir:  use Illuminate\Http\Request;
+
+request()->all()
+
+El mismo resultado lo podemos obtener usando el Facade Request
+
+Para utilizar el facade request se debe incluir:  use Illuminate\Support\Facades\Request;
+
+Request::all()
+
+Una tercera opción es usar inyección de dependencias capturando el objeto Request:
+
+use Illuminate\Http\Request;
+...
+public function store(Request $request)
+{
+    $request->all();
+}
+
+
+Ya que hemos podido obtener los datos, los guardamos en una variable, creamos la nota y redirigimos al usuario a a pantalla "notes", quedando la funcion store así:
+
+	public function store()
+	{
+		$data = request()->all();
+		Note::create($data);
+		return Redirect::to('notes');	// Como es con un Facade, no olvidar usar F5 para incluir el use Illuminate\Support\Facades\Redirect; en el encabezado
+	}
+
+Otra opcion para redireccionar a otra pagina seria con el helper redirect(), asi:	
+
+return redirect()->to('notes');		Esta opción no requiere definir los use en la cabecera del archivo con el namespace correcto
+
+Nuevamente volvemos a ejecutar la prueba y funciona ok.
+
+La variable $fillable dentro de las clases de cada modelo permiten especificar cuales campos van a poder ser llenados por asignación masiva como lo hacemos cuando 
+llamamos el método create() en el Controlador.
+
+Podemos vaciar la tabla de notas desde Artisan con Tinker
+
+php artisan tinker 
+
+App\Note::truncate();
+
+Mejoramos el formulario create.blade.php con los parametros "class" para mejorar su apariencia visual: 
+
+@section('content')
+	<h1>Create a Note</h1>
+	<form method="POST" action="{{ url('notes') }}" class="form">
+		{!! csrf_field() !!}
+		<textarea name="note" class="form-control"></textarea>
+		<button type="submit" class="btn btn-primary">Create note</button>
+	</form>
+@endsection
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 8. Validación de datos con Laravel
+
+Vamos a tratar sobre las validaciones, las cuales son una de las partes más importante para cualquier sistema informático pues, ya sea sin intención o 
+maliciosamente, los usuarios pueden cometer errores en nuestros formularios lo que provocará tener datos incorrectos en nuestra base de datos. Laravel 
+posee un componente validaciones, por lo cual nos facilita todo este proceso.
+
+Para realizar la validación hacemos uso del trait: ValidatesRequests el cual viene definido en el controlador base Controlller.php, el cual a su vez 
+extiende su funcionalidad a nuestro controlador NotesController.php. El trait ValidatesRequests contiene un metodo validate() que es el que vamos a usar.
+
+Para implementarlo en nuestro proyecto modificamos la funcion "store" de nuestro NotesController.php asi:
+
+	public function store()
+	{
+		$this->validate(request(), [
+			'note' => ['required', 'max:200']
+		]);
+
+		$data = request()->all();
+
+		Note::create($data);
+
+		return redirect()->to('notes');
+	}
+
+
+El método $this->validate()  es el encargado de realizar el proceso de validación. Recibe como primer parámetro el request y como segundo argumento un array de reglas.
+
+Con el helper  {{ old() }}  en nuestra vista podemos mantener los datos de nuestro formulario así no se cumplan las reglas de validación. De esta manera el usuario 
+tiene la posibilidad de corregir los campos sin perder la información ya escrita. Este helper acepta como primer parámetro el nombre del campo que va a mostrar 
+nuevamente, y como segundo parámetro un valor por default.
+
+@section('content')
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<h1>Create a Note</h1>
+		@if (! $errors->isEmpty())
+		<div class="alert alert-danger">
+			<p><strong>Por favor corrija los siguientes errores:</strong></p>
+			<ul>
+				@foreach($errors->all() as $error)
+					<li>{{ $error }}</li>
+				@endforeach
+			</ul>
+		</div>
+		@endif
+		<form method="POST" action="{{ url('notes') }}" class="form">
+			{!! csrf_field() !!}
+			<textarea name="note" class="form-control" placeholder="Escribe tu nota ...">{{ old('note') }}</textarea>
+			<button type="submit" class="btn btn-primary">Create note</button>
+		</form>
+	</div>
+</div>
+@endsection
+
+Mediante el uso de la variable $errors Laravel nos provee de un objeto que tiene ciertos métodos utiles que nos permiten traer los errores y
+mostrarlos en nuestra vista.
+
+Una mejor forma de mantener claro el código es cortar un bloque de código colocarlo en otro archivo y luego incluirlo con la etiqueta @include() de Blade 
+(manejador de plantilla).
+
+Para este caso cortamos el bloque de codigo que maneja el error:
+
+		@if (! $errors->isEmpty())
+		<div class="alert alert-danger">
+			<p><strong>Por favor corrija los siguientes errores:</strong></p>
+			<ul>
+				@foreach($errors->all() as $error)
+					<li>{{ $error }}</li>
+				@endforeach
+			</ul>
+		</div>
+		@endif
+
+Y lo reemplazamos por un @include('partials/errors'):
+
+@section('content')
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<h1>Create a Note</h1>
+		@include('partials/errors')
+		<form method="POST" action="{{ url('notes') }}" class="form">
+			{!! csrf_field() !!}
+			<textarea name="note" class="form-control" placeholder="Escribe tu nota ...">{{ old('note') }}</textarea>
+			<button type="submit" class="btn btn-primary">Create note</button>
+		</form>
+	</div>
+</div>
+@endsection
+
+Luego en la carpeta Views creamos una carpeta partials y alli creamos un nuevo archivo: errors.blade.php, en donde colocamos esta lógica de mostrar los errores.
+
+Esto permitirá leer más fácil el código y si es el caso también se podrá reutilizar ese partial en otras vistas.
+
+Para cambiar los mensajes de ingles a español, editamos el archivo: config/app.php:
+
+Buscamos:	'locale' => 'en',
+
+Y la reemplazamos por: 	'locale' => 'es',
+
+Luego en la carpeta: resources/lang hay una carpeta "en" que es la de los mensaje en ingles, por lo tanto tenemos que crear una carpeta: "es" y buscar 
+los archivos traducidos al español.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 9. Creación de Tablas con el Sistema de Migraciones de Laravel
+
+Laravel nos permite crear tablas en la base de datos mediante en una interfaz orientada a objetos, de esta manera se estará creando un sistema compatible con las 
+distintas bases de datos que soporta Laravel por defecto.  Por otro lado, las migraciones nos permiten tener un registro de las modificaciones que se han hecho o 
+se harán en la base de datos. Esta función es muy útil cuando se trabaja en equipo. En el siguiente video se demostrará con detalle cómo utilizarlas:
+
+Recuerda que los motores de datos que soporta Laravel son:
+
+MySQL
+Postgres
+SQLite
+SQL Server
+
+La configuración de esos motores están en /config/database.php
+
+La tabla migrations que se crea en la base de datos, es la que mantiene el historial de las migraciones y controla cual migraciones ejecutar y cual no. (Depende del 
+comando que ejecutes en consola)
+
+El comando que nos muestra la lista completa de comandos de Laravel: 	php artisan list
+
+Comandos migrate:Para crear tabla migrations:					php artisan migrate:install
+
+Nota: si ejecutas una migración de una tabla y no existe la tabla migration, será creada automáticamente.
+
+Para borrar todas las tablas de la base de datos y luego volverlas a crear:	php artisan migrate:refresh
+
+Para eliminar todas las tablas:							php artisan migrate:reset
+
+Permite deshacer el último grupo de migraciones ejecutadas:			php artisan migrate:rollback
+
+Para ver el estatus de cada migración:						php artisan migrate:status
+
+Para crear una migración:						php artisan make:migration create_categories_table --create=categories
+
+Nota: con el atributo –create=   podemos indicar como se llamará la tabla en la base de datos para esa migración.
+
+Para crear un campo indice que relacione las tablas categories y notes:	php artisan make:migration add_categories_column_to_notes --table=notes
+
+Luego en la function "up" de la nueva migración agregamos la columna "category_id" que se encargará de asociar las tablas:
+
+									$table->unsignedInteger('category_id')->nullable()->index()->after('note');
+
+Con ->index(), le indicamos al sistema que esta columna tiene un indice
+Con ->after('note'), le indicamos al sistema que queremos que se agregue esta columna luego de la columna 'note'
+
+Luego en la function "down" de la nueva migración agregamos la instrucción para eliminar la columna "category_id":
+
+									$table->dropColumn('category_id');
+
+Para ejecutar las nuevas migraciones creadas:				php artisan migrate
+
+Para no crear otra migración, tambien podemos modificar los archivos de migración originales incluyendo estas instrucciones en las funciones correspondientes, 
+y luego subiendolas a la Base de Datos con la instrucción:		php artisan migrate:refresh
+
+La idea es que cuando estamos apenas iniciando el proyecto podemos realizar estas modificaciones de las migraciones, pero cuando ya hemos lanzado la primera
+versión de la aplicación es mejor hacer una nueva migración, para tener control sobre los cambios a las versiones.
+
+
+Material relacionado
+
+Validación de datos con Laravel – Lección anterior
+Modificando migraciones en Laravel
+Flujo de trabajo en el desarrollo con Laravel
+Migraciones, seeders y model factories
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 10. Configuración de Bases de Datos y Entorno de Desarrollo
+
+En esta oportunidad configuraremos cada una de las bases de datos que estaremos usando en el desarrollo del aplicación, pues no podemos trabajar utilizando la 
+misma base de datos tanto para el entorno de desarrollo como para el entorno de pruebas.
+
+En el video para ejecutar las pruebas se usó el alias  t de:		vendor/bin/phpunit
+
+Cuando en el navegador se ejecuta bien la aplicación, pero cuando se ejecutan las pruebas unitarias con: 	vendor/bin/phpunit	y se genera un error: 
+
+A request to [http://localhost/notes/create] failed. Received status code [500].
+
+Caused by:
+ErrorException: Undefined variable: errors in ../first_steps/storage/framework/views/....:1
+
+Para corregir este problema editamos el archivo: \tests\NotesTest.php y quitamos la instrucción: 	use WithoutMiddleware;
+para poder ejecutar la prueba tal como se ejecuta en el navegador.
+
+Esto es debido a que un Middleware es el encargado de pasar la variable "errors" a la vista, y con la instrucció le estamos ordenando a Laravel
+que trabaje "sin los middleware", por lo tanto la variable "errors" no se carga, ni se envia a la vista automáticamente.
+
+En el archivo config/database.php se encuentra la configuración de cada uno de los motores de base de datos soportados por Laravel, donde todas las conexiones 
+a las bases de datos del proyecto están definidas en un array llamado connections. 
+
+Para el caso de esta aplicación dejamos solo 2 conexiones 'mysql', una 'mysql' para la base de datos de la aplicación y la que se creó 'mysql_tests' para la 
+conexión a la base de datos de pruebas (en el parametro: 'database'  => env('DB_DATABASE', 'forge').'_tests', agregamos '_tests' para que tome la base de datos:
+'mysql_tests'.
+
+Para ejecutar las migraciones en la base de datos de pruebas (notes_tests) tienes que indicar con el atributo --database la conexión referida a las pruebas 
+'mysql_tests':
+
+			php artisan migrate --database=mysql_tests
+
+Luego editamos el archivo phpunit.xml y en la section <php> agregamos una nueva variable de entorno:	<env name="DB_CONNECTION" value="mysql_tests"/>
+de esta forma cambiamos el valor de la variable "DB_CONNECTION" del archivo "config/database.php", que contiene la base de datos 'default', pero únicamente 
+para las pruebas unitarias.
+
+Para que la base de datos de pruebas "notes_tests" no acumule datos de prueba, usamos en el archivo: Notes_Test.php el trait:	use DatabaseTransactions;
+cuyo namespace ya debe venir incluido por defecto (use Illuminate\Foundation\Testing\DatabaseTransactions;). De esta forma los datos de todas las pruebas que 
+hagamos se generan dentro de una transacción de la base de datos.
+
+El archivo .env es el encargado de contener los datos de información de entorno del proyecto, como por ejemplo la conexión a la base de datos (usuario y contraseña), 
+por esta razon este archivo nunca debe ser subido al repositorio (ejemplo: git) por temas de seguridad. La única excepcion a esta regla es cuando se elabora el 
+deploy del proyecto. 
+
+Puede haber varios entornos del proyecto: local, desarrollo, beta y de producción, y cada uno de ellos debe tener un archivo ".env". 
+
+Mientras que el archivo: config/database.php si puede ser compartido, porque son valores comunes del entorno.
+
+Este archivo env va relacionado en el archivo: config/database.php, cuando es referenciado con la funcion: env(nombre de la llave, valor). 
+
+Ejemplo:	env('DB_HOST', 'localhost'),
+
+
+Material relacionado
+
+Flujo de trabajo en el desarrollo con Laravel
+Tipos de servidores y entornos
+Vagrant y Homestead
+Instalación y configuración de entornos
+Transacciones de bases de datos MySQL en PHP
+Restaurar registros borrados con Eloquent en Laravel 5
+Múltiples bases de datos con Laravel 5 y Eloquent
+Búsquedas y filtros con Laravel y Eloquent (Query scopes)
+Fluent y Eloquent en Laravel 5 – Parte 1
+Variables de entorno en Laravel 5.*
+PHP Traits en Laravel 5.1
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 11. Paginación y carga de registros con seeders y model factories en Laravel
+
+En esta lección del curso Primeros pasos con Laravel 5.* vamos a estudiar varios temas como la Paginación, que en Laravel es implementado de una manera sencilla. 
+
+Ademas hablaremos sobre los seeders y model factories para generar los registros en la base de datos para las notas de nuestra aplicación.
+
+El método paginate() puede ser usado con cualquier consulta de Eloquent y como resultado se obtiene una instancia de lluminate\Pagination\LengthAwarePaginator que 
+puede ser recorrido como un array a través de la directiva de Blade @foreach. 
+
+En el controlador NotesController.php cambiamos la instrucción: $notes = \App\Note::all(); por: $notes = \App\Note::paginate();
+
+Y en views/notes/list.blade.php agregamos al final (luego del foreach) la siguiente instrucción: {!! $notes->render() !!}
+
+El método render() genera el HTML (compatible con el framework de CSS Bootstrap) para acceder a las demás páginas que muestra el resultado de la consulta.
+
+Para crear el seeder para Notes en el directorio /database/seeds:
+
+		php artisan make:seeder NoteTableSeeder
+
+Este seeder hay que incluirlo en: DatabaseSeeder.php con la instrucción:	$this->call(NoteTableSeeder::class);
+
+Con la notación de PHP ::class podemos obtener el nombre completo de la clase (útil cuando se trabaja con namespace)
+
+Luego en la consola con la instruccion: php artisan db:seed	que se encargará de ejecutar los seeders definidos.
+
+Con el comando: php artisan migrate:refresh --seed, refrescamos los seeders (los borramos y los volvemos a ejecutar) para no crearlos doblemente.
+
+Para cambiar el tamaño de la paginación podemos editar el archivo: NotesController.php y colocar como primer argumento del metodo: paginate la cantidad
+de items que queremos ver por página.
+
+Para conocer más sobre los Model Factories: Model factories en Laravel 5.1 y nuestro componente Styde Seeder: Generar datos de prueba para Laravel con Styde Seeder
+
+Ejecutar la carga de registros a la base de datos con los seeders registrados en la clase DatabaseSeeder.php
+
+		php artisan db:seed
+
+Podemos igualmente ejecutar lo siguiente para deshacer las migraciones (rollback), volver a generarlas y al final ejecutar los seeders:
+
+		php artisan migrate:refresh --seed
+
+Tambien podemos utilizar ModelFactory para generar datos aleatorios (database\factories\ModelFactory.php), definiendolo con la siguiente instrucción:
+
+$factory->define(App\Note::class, function (Faker\Generator $faker) {
+	return [
+		'note' => $faker->paragraph
+	];
+}); 
+
+Luego desde el seeder invoco al factory (en la función run):	factory(Note::class)->times(100)->create()
+
+Material relacionado
+
+Model factories en Laravel 5.1
+Generar datos de prueba para Laravel con Styde Seeder
+Migraciones, seeders y model factories
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Curso 12. Eloquent el ORM de Laravel
+
+Se usó el framework CSS Bootstrap para mejorar presentación del listado de notas (enmarcando cada nota). Colocando las clases:
+
+<ul class="list-group">
+y
+<li class="list-group-item">
+
+Para crear la relación "una Note pertenece a una Category" en el modelo Note (App/Providers/Note.php) creamos un nuevo método llamado category() de la siguiente 
+manera:
+
+public function category()
+{
+    return $this->belongsTo(Category::class);
+}
+
+Para generar el modelo para categorias en el directorio app/providers:
+
+php artisan make:model Category
+
+Para hacer la relación inversa "una categoria (Category) tiene muchas notas (Note)" en el modelo Category creamos el método notes() con lo siguiente:
+
+public function notes()
+{
+   return $this->hasMany(Note::class);
+}
+
+Para visualizar el nombre de la categoria, modificamos el archivo: list.blade.php agregando la siguiente instrucción dentro del <li>:
+
+	{{ $note->category->name }}
+
+
+Para agregar los datos de Categorias en la tabla Notes, creamos el seeder de Category:
+
+php artisan make:seeder CategoryTableSeeder
+
+Luego modificamos el seeder creado: database/seeds/CategoryTableSeeder.php:
+
+Primero importamos el namespace: 	use \App\Category;
+
+Luego en el método "run" agregamos algunas Categorias:
+
+    public function run()
+    {
+       Category::create(['name' => 'Tareas']);
+       Category::create(['name' => 'Recordatorios']);
+       Category::create(['name' => 'Recursos']);
+       Category::create(['name' => 'Eventos']);
+    }
+
+Con el método create() se crean las instancias de un modelo y se persisten dichos objetos en la base de datos, en cambio, con make() sólo se crean las instancias 
+del modelo sin persistirlas en la base de datos.
+
+Por último enlazamos este seeder a DatabaseSeeder:
+
+    public function run()
+    {
+        Model::unguard();
+
+        // $this->call(UserTableSeeder::class);
+        $this->call(CategoryTableSeeder::class);
+        $this->call(NoteTableSeeder::class);
+
+        Model::reguard();
+    }
+
+Dejamos definidas primero las Categorias y luego las Notas, porque los registros de las Notas pertenecen o dependen de los registros de las Categorias.
+
+Luego de vuelta al seeder que nos permite crar notas ya tenemos algunas Categorias en la base de datos:	$categories = \App\Category::all();
+
+Y cambiamos el método "create" del factory, por el método "make" para crear los modelos.
+
+Luego se hace un recorrido de cada una de estas notas utilizando un "foreach" para grabarlas en la Base de Datos:
+
+       // Asigna una categoria por random, y luego la almcena en la BD dependiendo de la relación especificada en el método notes()
+       // Cuando se usan los paréntesis, Eloquent asume que estamos hablando de la relación: Ejemplo: notes() habla de la relacion
+
+       foreach 	($notes as $note) {
+       		$categories->random()->notes()->save($note);
+       }
+
+En el archivo: list.blade.php se modifica la linea para agregar una clase que le de mas visibilidad a la Categoria (mostrandola como un label):
+
+<span class="label label-info">{{ $note->category->name }}</span>
+
+Si necesitas obtener una relación asociada a una colección de Eloquent se hace llamando el método de dicha relación:
+
+$category->notes()
+
+Si lo que quieres es obtener los registros relacionados a un objeto mediante una relación, por ejemplo: todas las notas relacionadas a una categoria escribes:
+
+$category->notes
+
+o la categoria (Category) relacionada con una nota (Note):
+
+$note->category
+
+Para volver a generar las migraciones y cargar los registros con los seeders:
+
+php artisan migrate:refresh --seed
+
+
+Material relacionado
+
+Curso básico de Eloquent ORM
+Curso avanzado de Eloquent ORM
+Aprende a usar Eloquent el ORM de Laravel
+Uso de Pivot tables con Eloquent en Laravel
